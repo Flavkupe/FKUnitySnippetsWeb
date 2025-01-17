@@ -1,15 +1,11 @@
 import './App.css'
-import { HelloWorld } from './pages/helloworld'
+import { MainPage } from './pages/main-page/main-page'
 
 function App() {
   return (
-    <>
-      <div>
-        Hello World  
-      </div>
-      
-      <HelloWorld />
-    </>
+    <div className="App">
+      <MainPage />
+    </div>
   )
 }
 
