@@ -39,8 +39,7 @@ export function WebGLEmbed({activeFile}: Props) {
             ref={iframeRef}
             width="300px"
             height="300px"
-            // src="https://flavkupe.github.io/FKUnitySnippetsApp/"
-            src="http://localhost:64415/"
+            src="https://flavkupe.github.io/FKUnitySnippets/"
         />
     </div>
 }
