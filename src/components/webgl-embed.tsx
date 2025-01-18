@@ -62,8 +62,8 @@ export function WebGLEmbed({activeFile}: Props) {
             ref={iframeRef}
             width="300px"
             height="300px"
-            // src="https://flavkupe.github.io/FKUnitySnippets/"
-            src="http://localhost:51736/"
+            src="https://flavkupe.github.io/FKUnitySnippets/"
+            // src="http://localhost:51736/"
         />
         <EmbedControls controls={controls} />
     </div>
