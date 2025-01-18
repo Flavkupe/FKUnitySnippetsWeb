@@ -1,13 +1,23 @@
-import { Button } from "react-bootstrap";
-import { GithubAccessibleFile } from "../models/github-files";
+import { Accordion, Button } from "react-bootstrap";
+import { GithubFile } from "../models/github-files";
 
 
 interface Props {
-    files: GithubAccessibleFile[],
-    onClickFile: (file: GithubAccessibleFile) => void;
+    files: GithubFile[],
+    onClickFile: (file: GithubFile) => void;
 }
 
 export function FileNav({files, onClickFile}: Props) {
+
+    const filesByPath: Record<string, GithubFile[]> = {};
+    for (const file of files) {
+        const path = file.shortPath;
+        if (!filesByPath[path]) {
+            filesByPath[path] = [];
+        }
+        filesByPath[path].push(file);
+    }
+
     return (
         <div style={{
             height: "100%",
@@ -16,14 +26,27 @@ export function FileNav({files, onClickFile}: Props) {
             display: "flex",
             flexDirection: "column",
         }}>
-            {files.map((file) => (
-                <Button key={file.displayName} color="white" style={{
-                    padding: "10px",
-                    marginTop: "10px",
-                    backgroundColor: "white",
-                    color: "black",
-                }} onClick={() => onClickFile(file)}>{file.displayName}</Button>
-            ))}
+            <Accordion>
+            {Object.keys(filesByPath).map((path) => {
+                const files = filesByPath[path];
+                return (
+                <div key={path}>
+                    <Accordion.Item eventKey={path}>
+                        <Accordion.Header>{path}</Accordion.Header>
+                        <Accordion.Body>
+                            {files.map((file) => {
+                                return <Button key={file.name} color="white" style={{
+                                    padding: "10px",
+                                    marginTop: "10px",
+                                    backgroundColor: "white",
+                                    color: "black",
+                                }} onClick={() => onClickFile(file)}>{file.name}</Button>
+                            })}
+                        </Accordion.Body>
+                    </Accordion.Item>
+                </div>)
+            })}
+            </Accordion>
         </div>
     )
 }

@@ -15,6 +15,7 @@ export function CodeBox({code}: Props) {
             ...coy,
         }} customStyle={{
             borderRadius: "10px",
+            fontSize: "0.8em",
         }}>
             {code}
         </SyntaxHighlighter>

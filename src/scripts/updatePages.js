@@ -1,36 +1,61 @@
 import axios from "axios";
+import fs from "fs";
+import path from "path";
 
 const repoRoot = "FKUnitySnippetsLibrary";
 const repo = "https://api.github.com/repos/Flavkupe/FKUnitySnippetsLibrary/contents";
 
+const allData = [];
+
 async function updatePages() {
-    updateDirectory(repoRoot);
+    await updateDirectory(repoRoot);
+    await writeFileData(allData);
 }
 
 async function updateDirectory(directoryPath) {
     const contents = await axios.get(`${repo}/${directoryPath}`);
     const data = contents.data;
+    
     for (let i = 0; i < data.length; i++) {
         const content = data[i];
         if (content.type === "dir") {
-            console.log("DIR");
             await updateDirectory(content.path);
         } else {
-            console.log("FILE");
-            await updateFiles(content);
+            const fileData = await getFileData(content);
+            if (fileData) {
+                allData.push(fileData);
+            }
         }
     }
 }
 
-async function updateFiles(fileData) {
-    console.log(fileData);
-    if (!fileData.name.endsWith(".cs")) {
+async function writeFileData(allFileData) {
+    const libContentPath = "src/library-content/";
+    const libContent = JSON.stringify(allFileData);
+    fs.writeFileSync(`${libContentPath}/library-content.json`, libContent, { encoding: "utf8" });
+}
+
+async function getFileData(fileData) {
+    if (!fileData.name.endsWith(".cs") || fileData.size === 0) {
         return;
     }
 
     const fileContent = await axios.get(fileData.download_url);
-    console.log(fileData.name);
-    console.log(fileContent);
+    if (fileContent.status !== 200 || !fileContent) {
+        console.log("Error fetching file content for file", fileData);
+        return;
+    }
+
+    const name = fileData.name.split(".")[0];
+    const shortPath = path.dirname(fileData.path.replace(`${repoRoot}/`, ""));
+    return {
+        fileContent: fileContent.data,
+        name,
+        shortPath,
+        filename: fileData.name,
+        path: fileData.path,
+        url: fileData.html_url,
+    };
 }
 
 updatePages();

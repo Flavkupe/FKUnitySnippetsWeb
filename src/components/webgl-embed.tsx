@@ -26,7 +26,6 @@ export function WebGLEmbed({activeFile}: Props) {
             value: file,
         });
 
-        console.log("Posting message!");
         const message = { type: 'UPDATE_IFRAME', data: messageData };
         iframeRef.current?.contentWindow.postMessage(message, '*');
     }
