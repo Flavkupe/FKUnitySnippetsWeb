@@ -1,4 +1,4 @@
-import { Accordion, Button } from "react-bootstrap";
+import { Accordion } from "react-bootstrap";
 import { GithubFile } from "../models/github-files";
 import { FileSelectionItem } from "./file-selection-item";
 
