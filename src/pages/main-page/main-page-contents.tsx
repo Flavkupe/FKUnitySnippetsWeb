@@ -5,9 +5,10 @@ import { GithubAccessibleFile, GithubFile } from "../../models/github-files";
 import { FileNav } from "../../components/file-nav";
 import { CodeBox } from "../../components/code-box";
 
-// const validFolders = [
-//     "Transformations",
-// ]
+const validFolders = [
+    "Transformations",
+    "Text/TMPro",
+]
 
 export function MainPageContents() {
     const [files, setFiles] = useState<GithubAccessibleFile[]>([]);
@@ -23,30 +24,41 @@ export function MainPageContents() {
             file.download_url,
         );
 
-        console.log(response.data);
+        if (response == null || response.status !== 200) {
+            console.log("Error with response", response);
+            return;
+        }
 
         setCode(response.data);
     }
 
     useEffect(() => {
         const fetchFiles = async () => {
-            const response = await axios.get<GithubFile[]>(
-            `https://api.github.com/repos/Flavkupe/FKUnitySnippetsLibrary/contents/FKUnitySnippetsLibrary/Transformations`
-            );
-
-            const results = response.data;
             const newFiles: GithubAccessibleFile[] = [];
-            for (const file of results) {
-                if (!file.name.endsWith(".cs")) {
+            for (const folder of validFolders) {       
+                const response = await axios.get<GithubFile[]>(
+                `https://api.github.com/repos/Flavkupe/FKUnitySnippetsLibrary/contents/FKUnitySnippetsLibrary/${folder}`
+                );
+
+                if (response == null || response.status !== 200) {
+                    console.log("Error with response", response);
                     continue;
                 }
 
-                const trimmedName = file.name.slice(0, file.name.length - 3);
-                newFiles.push({
-                    ...file,
-                    displayName: trimmedName,
-                    componentName: trimmedName,
-                })
+                const results = response.data;
+                
+                for (const file of results) {
+                    if (!file.name.endsWith(".cs")) {
+                        continue;
+                    }
+
+                    const trimmedName = file.name.slice(0, file.name.length - 3);
+                    newFiles.push({
+                        ...file,
+                        displayName: trimmedName,
+                        componentName: trimmedName,
+                    })
+                }
             }
 
             setFiles(newFiles);
