@@ -1,10 +1,16 @@
 import './App.css'
-import { MainPage } from './pages/main-page/main-page'
+import { PageHeader } from './components/page-header'
+import { MainPage } from './pages/main-page'
 
 function App() {
   return (
     <div className="App">
-      <MainPage />
+        <header className="App-header">
+            <PageHeader />
+        </header>
+        <main>
+            <MainPage />
+        </main>
     </div>
   )
 }

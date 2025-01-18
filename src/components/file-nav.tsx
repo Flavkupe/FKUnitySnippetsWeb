@@ -1,14 +1,15 @@
 import { Accordion, Button } from "react-bootstrap";
 import { GithubFile } from "../models/github-files";
+import { FileSelectionItem } from "./file-selection-item";
 
 
 interface Props {
     files: GithubFile[],
     onClickFile: (file: GithubFile) => void;
+    currentSelection: GithubFile | null;
 }
 
-export function FileNav({files, onClickFile}: Props) {
-
+export function FileNav({files, onClickFile, currentSelection}: Props) {
     const filesByPath: Record<string, GithubFile[]> = {};
     for (const file of files) {
         const path = file.shortPath;
@@ -33,14 +34,16 @@ export function FileNav({files, onClickFile}: Props) {
                 <div key={path}>
                     <Accordion.Item eventKey={path}>
                         <Accordion.Header>{path}</Accordion.Header>
-                        <Accordion.Body>
+                        <Accordion.Body style={{
+                            padding: "0px"
+                        }}>
                             {files.map((file) => {
-                                return <Button key={file.name} color="white" style={{
-                                    padding: "10px",
-                                    marginTop: "10px",
-                                    backgroundColor: "white",
-                                    color: "black",
-                                }} onClick={() => onClickFile(file)}>{file.name}</Button>
+                                return <FileSelectionItem
+                                    key={file.path}
+                                    file={file}
+                                    onClickFile={onClickFile}
+                                    isSelected={currentSelection?.path === file.path}
+                                />
                             })}
                         </Accordion.Body>
                     </Accordion.Item>

@@ -42,3 +42,24 @@ main {
   flex: 1;
   padding: 20px;
 }
+
+.file-selection-item {
+  padding: 10px;
+  border-bottom: #96999e 1px solid;
+  cursor: pointer;
+}
+
+.file-selection-item:hover {
+  background-color: #e9ecef;
+}
+
+.embed-controls {
+  margin-left: 20px;
+  border: 4px solid lightgray;
+  border-radius: 10px;
+  padding: 20px;
+  height: 100%;
+  background-color: #f3f3f3;
+  font-family: monospace;
+  font-weight: bold;
+}
