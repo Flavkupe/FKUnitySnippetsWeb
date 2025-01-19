@@ -39,5 +39,21 @@
                 ]
             }
         ]
+    },
+    {
+        "category": "Probability",
+        "items": [
+            {
+                "name": "WeightedList",
+                "path": "Probability/WeightedListDemo.cs",
+                "description": "Create a list of items which can be randomly picked based on the weights of each item!",
+                "supportingFiles": [
+                    {
+                        "name": "WeightedList",
+                        "path": "Probability/WeightedList.cs"
+                    }
+                ]
+            }
+        ]
     }
 ]
