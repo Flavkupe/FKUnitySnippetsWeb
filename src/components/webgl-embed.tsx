@@ -64,6 +64,6 @@ export function WebGLEmbed({activeFile}: Props) {
             src="https://flavkupe.github.io/FKUnitySnippets/"
             // src="http://localhost:51736/"
         />
-        <EmbedControls controls={controls} />
+        <EmbedControls activeFile={activeFile} controls={controls} />
     </div>
 }
