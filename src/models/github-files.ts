@@ -5,6 +5,12 @@ export interface GithubFile {
     name: string;
 
     /**
+     * Name that is used to match up the demo in the game applet
+     * (eg, "BezierDemo" for "BezierDemo.cs").
+     */
+    demoName: string;
+
+    /**
      * Name and extension, eg "Bounce.cs"
      */
     filename: string;
@@ -28,4 +34,9 @@ export interface GithubFile {
      * The actual string contents of the file.
      */
     fileContent: string;
+
+    /**
+     * List of files that are shown alongside this file (eg, Bezier.cs for BezierDemo.cs).
+     */
+    supportingFiles?: GithubFile[];
 }

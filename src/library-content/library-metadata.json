@@ -1,0 +1,43 @@
+[
+    {
+        "category": "Text/TMPro",
+        "items": [
+            {
+                "name": "ShakyText",
+                "path": "Text/TMPro/ShakyText.cs",
+                "description": "Embed on the TMPro component to make the text jitter."
+            }
+        ]
+    },
+    {
+        "category": "Transformations",
+        "items": [
+            {
+                "name": "OscillatingObject",
+                "path": "Transformations/OscillatingObject.cs",
+                "description": "Make the object oscillate along an axis."
+            },
+            {
+                "name": "SpinningObject",
+                "path": "Transformations/SpinningObject.cs",
+                "description": "Make the object spin along an axis."
+            }
+        ]
+    },
+    {
+        "category": "Curves/Bezier",
+        "items": [
+            {
+                "name": "BezierCurve",
+                "path": "Curves/Bezier/BezierDemo.cs",
+                "description": "Make the object oscillate along an axis.",
+                "supportingFiles": [
+                    {
+                        "name": "Bezier",
+                        "path": "Curves/Bezier/Bezier.cs"
+                    }
+                ]
+            }
+        ]
+    }
+]
