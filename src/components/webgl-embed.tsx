@@ -22,7 +22,6 @@ export function WebGLEmbed({activeFile}: Props) {
         } catch(err) {
             console.error("error parsing message", err);
         }
-        
     }
 
     useEffect(() => {

@@ -1,6 +1,7 @@
 import { Accordion } from "react-bootstrap";
 import { GithubFile } from "../models/github-files";
 import { FileSelectionItem } from "./file-selection-item";
+import { useMemo } from "react";
 
 
 interface Props {
@@ -10,14 +11,24 @@ interface Props {
 }
 
 export function FileNav({files, onClickFile, currentSelection}: Props) {
-    const filesByPath: Record<string, GithubFile[]> = {};
-    for (const file of files) {
-        const path = file.shortPath;
-        if (!filesByPath[path]) {
-            filesByPath[path] = [];
+    const filesByPath = useMemo<Record<string, GithubFile[]>>(() => {
+        const mapping: Record<string, GithubFile[]> = {};
+        for (const file of files) {
+            const path = file.shortPath;
+            if (!mapping[path]) {
+                mapping[path] = [];
+            }
+            mapping[path].push(file);
         }
-        filesByPath[path].push(file);
-    }
+
+        return mapping;
+    }, [files]);
+
+    const keys = useMemo<string[]>(() => {
+        const keys = Object.keys(filesByPath);
+        keys.sort();
+        return keys;
+    }, [filesByPath]);
 
     return (
         <div style={{
@@ -28,8 +39,8 @@ export function FileNav({files, onClickFile, currentSelection}: Props) {
             flexDirection: "column",
         }}>
             <Accordion>
-            {Object.keys(filesByPath).map((path) => {
-                const files = filesByPath[path];
+            {keys.map((path) => {
+                const items = filesByPath[path];
                 return (
                 <div key={path}>
                     <Accordion.Item eventKey={path}>
@@ -37,7 +48,7 @@ export function FileNav({files, onClickFile, currentSelection}: Props) {
                         <Accordion.Body style={{
                             padding: "0px"
                         }}>
-                            {files.map((file) => {
+                            {items.map((file) => {
                                 return <FileSelectionItem
                                     key={file.path}
                                     file={file}
