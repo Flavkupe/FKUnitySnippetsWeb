@@ -20,6 +20,8 @@ export interface SnippetLibraryValues {
     onSelectFile: (file: GithubFile) => void;
     hasPackageFile: boolean;
     downloadPackageFile: () => void;
+    updateControls: (newControls: string[]) => void;
+    controls: string[];
 }
 
 interface Props {
@@ -32,6 +34,7 @@ export function useSnippetLibrary({webGLReady}: Props): SnippetLibraryValues {
     const [activeFile, setActiveFile] = useState<GithubFile | null>(null);
     const [selectedFile, setSelectedFile] = useState<GithubFile | null>(null);
     const [docFile, setDocFile] = useState<CodeFile | null>(null);
+    const [controls, setControls] = useState<string[]>([]);
 
     const onSelectFile = (file: GithubFile) => {
         setSelectedFile(file);
@@ -43,6 +46,10 @@ export function useSnippetLibrary({webGLReady}: Props): SnippetLibraryValues {
                 type: "cs",
             });
         }
+
+        // controls are updated from the WebGL embed; this ensures
+        // they are cleared out when the content does not have controls
+        setControls([]);
 
         setDocFile(!file.docFileContent ? null : {
             code: file.docFileContent,
@@ -90,6 +97,10 @@ export function useSnippetLibrary({webGLReady}: Props): SnippetLibraryValues {
 
     const hasPackageFile = !!selectedFile?.packageFileUrl;
 
+    const updateControls = (newControls: string[]) => {
+        setControls(newControls);
+    }
+
     return {
         files,
         codeFiles,
@@ -99,5 +110,7 @@ export function useSnippetLibrary({webGLReady}: Props): SnippetLibraryValues {
         hasPackageFile,
         downloadPackageFile,
         docFile: docFile,
+        controls,
+        updateControls,
     }
 }

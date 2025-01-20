@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { UnityMessageData } from "../../models/unity-message";
 import { EmbedControls } from "./embed-controls";
 import { useLibraryContext } from "../../hooks/use-library-context";
@@ -10,8 +10,7 @@ interface Props {
 
 export function WebGLEmbed({activeFile}: Props) {   
     const iframeRef = useRef<HTMLIFrameElement | null>(null);
-    const { setWebGLReady, webGLReady } = useLibraryContext();
-    const [controls, setControls] = useState<string[]>([]);
+    const { setWebGLReady, webGLReady, controls, updateControls } = useLibraryContext();
     const handleMessage = (event: MessageEvent) => {
         try {
             const data = JSON.parse(event.data) as UnityMessageData;
@@ -23,7 +22,7 @@ export function WebGLEmbed({activeFile}: Props) {
                 return;
             }
 
-            setControls(data.controls);
+            updateControls(data.controls);
         } catch(err) {
             console.error("error parsing message", err);
         }
