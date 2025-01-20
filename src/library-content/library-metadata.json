@@ -1,5 +1,14 @@
 [
     {
+        "category": "ExtensionFunctions",
+        "items": [
+            {
+                "name": "ExtensionFunctions",
+                "path": "ExtensionFunctions/ExtensionFunctions.cs"
+            }
+        ]
+    },
+    {
         "category": "Text/TMPro",
         "items": [
             {
@@ -56,19 +65,33 @@
                         "path": "Coroutines/Timer/Timer.cs"
                     }
                 ]
+            },
+            {
+                "name": "CoroutineRunner",
+                "path": "Coroutines/Runner/CoroutineRunner.cs"
             }
         ]
     },
     {
-        "category": "Probability",
+        "category": "Randomization",
         "items": [
             {
                 "name": "WeightedList",
-                "path": "Probability/WeightedList/WeightedListDemo.cs",
+                "path": "Randomization/WeightedList/WeightedListDemo.cs",
                 "supportingFiles": [
                     {
                         "name": "WeightedList",
-                        "path": "Probability/WeightedList/WeightedList.cs"
+                        "path": "Randomization/WeightedList/WeightedList.cs"
+                    }
+                ]
+            },
+            {
+                "name": "PerlinNoiseMap",
+                "path": "Randomization/PerlinNoiseMap/PerlinNoiseMapDemo.cs",
+                "supportingFiles": [
+                    {
+                        "name": "PerlinNoiseMap",
+                        "path": "Randomization/PerlinNoiseMap/PerlinNoiseMap.cs"
                     }
                 ]
             }
