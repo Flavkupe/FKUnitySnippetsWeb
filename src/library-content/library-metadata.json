@@ -4,7 +4,7 @@
         "items": [
             {
                 "name": "ShakyText",
-                "path": "Text/TMPro/ShakyText.cs",
+                "path": "Text/TMPro/ShakyText/ShakyText.cs",
                 "description": "Embed on the TMPro component to make the text jitter."
             }
         ]
@@ -14,12 +14,12 @@
         "items": [
             {
                 "name": "OscillatingObject",
-                "path": "Transformations/OscillatingObject.cs",
+                "path": "Transformations/OscillatingObject/OscillatingObject.cs",
                 "description": "Make the object oscillate along an axis."
             },
             {
                 "name": "SpinningObject",
-                "path": "Transformations/SpinningObject.cs",
+                "path": "Transformations/SpinningObject/SpinningObject.cs",
                 "description": "Make the object spin along an axis."
             }
         ]
@@ -45,12 +45,12 @@
         "items": [
             {
                 "name": "WeightedList",
-                "path": "Probability/WeightedListDemo.cs",
+                "path": "Probability/WeightedList/WeightedListDemo.cs",
                 "description": "Create a list of items which can be randomly picked based on the weights of each item!",
                 "supportingFiles": [
                     {
                         "name": "WeightedList",
-                        "path": "Probability/WeightedList.cs"
+                        "path": "Probability/WeightedList/WeightedList.cs"
                     }
                 ]
             }

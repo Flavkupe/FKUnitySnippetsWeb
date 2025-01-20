@@ -36,6 +36,11 @@ export interface GithubFile {
     fileContent: string;
 
     /**
+     * Optional contents of an md file that describes the demo.
+     */
+    docFileContent?: string | null;
+
+    /**
      * List of files that are shown alongside this file (eg, Bezier.cs for BezierDemo.cs).
      */
     supportingFiles?: GithubFile[];
@@ -49,4 +54,9 @@ export interface GithubFile {
      * If available, the name of the package file for the current demo.
      */
     packageFileName?: string;
+
+    /**
+     * Shared group for multiple files, eg "Transformations"
+     */
+    category: string;
 }

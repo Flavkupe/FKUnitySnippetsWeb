@@ -3,14 +3,18 @@ import { GithubFile } from "../models/github-files";
 
 import allContents from "../library-content/library-content.json";
 
+
+
 export interface CodeFile {
-    filename: string;
+    filename?: string;
     code: string;
+    type: 'cs' | 'md';
 }
 
 export interface SnippetLibraryValues {
     files: GithubFile[];
     codeFiles: CodeFile[] ;
+    docFile: CodeFile | null;
     activeFile: GithubFile | null;
     selectedFile: GithubFile | null;
     onSelectFile: (file: GithubFile) => void;
@@ -27,14 +31,23 @@ export function useSnippetLibrary({webGLReady}: Props): SnippetLibraryValues {
     const [codeFiles, setCodeFiles] = useState<CodeFile[]>([]);
     const [activeFile, setActiveFile] = useState<GithubFile | null>(null);
     const [selectedFile, setSelectedFile] = useState<GithubFile | null>(null);
-
+    const [docFile, setDocFile] = useState<CodeFile | null>(null);
 
     const onSelectFile = (file: GithubFile) => {
         setSelectedFile(file);
-        const newCodeFiles = [{ filename: file.filename, code: file.fileContent }];
+        const newCodeFiles: CodeFile[] = [{ filename: file.filename, code: file.fileContent, type: "cs" }];
         for (const supportingFile of file.supportingFiles ?? []) {
-            newCodeFiles.push({ filename: supportingFile.filename, code: supportingFile.fileContent });
+            newCodeFiles.push({ 
+                filename: supportingFile.filename,
+                code: supportingFile.fileContent,
+                type: "cs",
+            });
         }
+
+        setDocFile(!file.docFileContent ? null : {
+            code: file.docFileContent,
+            type: "md",
+        });
 
         setCodeFiles(newCodeFiles);
     }
@@ -85,5 +98,6 @@ export function useSnippetLibrary({webGLReady}: Props): SnippetLibraryValues {
         onSelectFile,
         hasPackageFile,
         downloadPackageFile,
+        docFile: docFile,
     }
 }

@@ -25,10 +25,10 @@ interface LibraryContent {
     filename: string;
     path: string;
     url: string;
-    packageFileUrl?: string;
-    packageFileName?: string;
+    packageFileUrl?: string | null;
+    packageFileName?: string | null;
+    docFileContent?: string | null;
     supportingFiles?: LibraryContent[];
-
 }
 
 const repoRoot = "FKUnitySnippetsLibrary";
@@ -38,6 +38,8 @@ const htmlUrlRoot = "https://github.com/Flavkupe/FKUnitySnippetsLibrary/blob/mai
 const cachedContent: Record<string, string> = {};
 
 const allData: LibraryContent[] = [];
+
+let requestsMade = 0;
 
 // use a PAT in .env to make the call authenticated, to avoid rate limiting
 const githubToken = process.env.GITHUB_TOKEN;
@@ -59,9 +61,12 @@ async function updatePages() {
     }
 
     await writeFileData(allData);
+
+    console.log("Requests made to API:", requestsMade);
 }
 
 async function callUrl(url: string): Promise<string | null> {
+    requestsMade++;
     const response = await axios.get(url, {
         headers: {
             Authorization: githubToken ? `token ${githubToken}` : undefined,
@@ -76,8 +81,29 @@ async function callUrl(url: string): Promise<string | null> {
     return response.data;
 }
 
-async function getLibraryItemContent(libraryItem: LibraryItem): Promise<string | null> {
-    const url = `${contentUrlRoot}/${libraryItem.path}`;
+async function checkIfFileExists(url: string): Promise<boolean> {
+    try {
+        requestsMade++;
+        const response = await axios.head(url);
+        return response.status === 200;
+    } catch (error) {
+        return false;
+    }
+}
+
+async function getFileContentIfUrlExists(url: string): Promise<string | null> {
+    if (cachedContent[url]) {
+        return cachedContent[url];
+    }
+
+    if (!await checkIfFileExists(url)) {
+        return null;
+    }
+
+    return getFileContent(url);
+}
+
+async function getFileContent(url: string): Promise<string | null> {
     if (cachedContent[url]) {
         return cachedContent[url];
     }
@@ -85,7 +111,7 @@ async function getLibraryItemContent(libraryItem: LibraryItem): Promise<string |
     const fileContent = await callUrl(url);
 
     if (!fileContent) {
-        console.log("Error fetching file content for file", libraryItem.path);
+        console.log("Error fetching file content for file", path);
         return null;
     }
 
@@ -99,14 +125,9 @@ function getUnityPackageUrl(libraryItem: LibraryItem): string {
     return `${contentUrlRoot}/${path}`;
 }
 
-async function checkUnityPackageExists(libraryItem: LibraryItem): Promise<boolean> {
-    const url = getUnityPackageUrl(libraryItem);
-    try {
-        const response = await axios.head(url);
-        return response.status === 200;
-    } catch (error) {
-        return false;
-    }
+function getDocFileUrl(libraryItem: LibraryItem): string {
+    const path = libraryItem.path.replace(/\.cs$/, '.md');
+    return `${contentUrlRoot}/${path}`;
 }
 
 async function getLibraryItemData(libraryItem: LibraryItem, category: string, isSupportingFile: boolean): Promise<LibraryContent | null> {
@@ -115,18 +136,23 @@ async function getLibraryItemData(libraryItem: LibraryItem, category: string, is
     const htmlUrl = `${htmlUrlRoot}/${libraryItem.path}`;
     const name = libraryItem.name;
     const shortPath = path.dirname(libraryItem.path.replace(`${repoRoot}/`, ""));
+    const contentUrl = `${contentUrlRoot}/${libraryItem.path}`;
+    const docFileUrl = getDocFileUrl(libraryItem);
+    const packageUrl = getUnityPackageUrl(libraryItem);
 
-    const fileContentPromise = getLibraryItemContent(libraryItem);
+    const fileContentPromise = getFileContent(contentUrl);
+
 
     const supportingFilesPromises: Promise<LibraryContent | null>[] = [];
     for (const supportingFile of libraryItem.supportingFiles || []) {
         supportingFilesPromises.push(getLibraryItemData(supportingFile, category, true));
     }
 
-    const [fileContent, supportingFilesResults, hasPackage] = await Promise.all([
+    const [fileContent, supportingFilesResults, hasPackage, docFileContent] = await Promise.all([
         fileContentPromise,
         Promise.all(supportingFilesPromises),
-        isSupportingFile ? Promise.resolve(false) : checkUnityPackageExists(libraryItem)
+        isSupportingFile ? Promise.resolve(false) : checkIfFileExists(packageUrl),
+        isSupportingFile ? Promise.resolve(null) : getFileContentIfUrlExists(docFileUrl)
     ]);
 
     if (!fileContent) {
@@ -144,6 +170,7 @@ async function getLibraryItemData(libraryItem: LibraryItem, category: string, is
         filename,
         path: libraryItem.path,
         url: htmlUrl,
+        docFileContent,
         supportingFiles,
     };
 

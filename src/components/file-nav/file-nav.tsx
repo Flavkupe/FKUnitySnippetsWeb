@@ -10,24 +10,24 @@ interface Props {
 }
 
 export function FileNav({files, onClickFile, currentSelection}: Props) {
-    const filesByPath = useMemo<Record<string, GithubFile[]>>(() => {
+    const filesByCategory = useMemo<Record<string, GithubFile[]>>(() => {
         const mapping: Record<string, GithubFile[]> = {};
         for (const file of files) {
-            const path = file.shortPath;
-            if (!mapping[path]) {
-                mapping[path] = [];
+            const category = file.category;
+            if (!mapping[category]) {
+                mapping[category] = [];
             }
-            mapping[path].push(file);
+            mapping[category].push(file);
         }
 
         return mapping;
     }, [files]);
 
     const keys = useMemo<string[]>(() => {
-        const keys = Object.keys(filesByPath);
+        const keys = Object.keys(filesByCategory);
         keys.sort();
         return keys;
-    }, [filesByPath]);
+    }, [filesByCategory]);
 
     return (
         <div style={{
@@ -38,12 +38,12 @@ export function FileNav({files, onClickFile, currentSelection}: Props) {
             flexDirection: "column",
         }}>
             <Accordion>
-            {keys.map((path) => {
-                const items = filesByPath[path];
+            {keys.map((category) => {
+                const items = filesByCategory[category];
                 return (
-                <div key={path}>
-                    <Accordion.Item eventKey={path}>
-                        <Accordion.Header>{path}</Accordion.Header>
+                <div key={category}>
+                    <Accordion.Item eventKey={category}>
+                        <Accordion.Header>{category}</Accordion.Header>
                         <Accordion.Body style={{
                             padding: "0px"
                         }}>
