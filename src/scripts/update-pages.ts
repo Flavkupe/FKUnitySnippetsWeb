@@ -121,13 +121,17 @@ async function getFileContent(url: string): Promise<string | null> {
 }
 
 function getUnityPackageUrl(libraryItem: LibraryItem): string {
-    const path = libraryItem.path.replace(/\.cs$/, '.unitypackage');
-    return `${contentUrlRoot}/${path}`;
+    const shortPath = getShortPath(libraryItem);
+    return `${contentUrlRoot}/${shortPath}/${libraryItem.name}.unitypackage`;
 }
 
 function getDocFileUrl(libraryItem: LibraryItem): string {
-    const path = libraryItem.path.replace(/\.cs$/, '.md');
-    return `${contentUrlRoot}/${path}`;
+    const shortPath = getShortPath(libraryItem);
+    return `${contentUrlRoot}/${shortPath}/${libraryItem.name}.md`;
+}
+
+function getShortPath(libraryItem: LibraryItem): string {
+    return path.dirname(libraryItem.path.replace(`${repoRoot}/`, ""));
 }
 
 async function getLibraryItemData(libraryItem: LibraryItem, category: string, isSupportingFile: boolean): Promise<LibraryContent | null> {
@@ -135,13 +139,12 @@ async function getLibraryItemData(libraryItem: LibraryItem, category: string, is
     const demoName = filename.replace(".cs", "");
     const htmlUrl = `${htmlUrlRoot}/${libraryItem.path}`;
     const name = libraryItem.name;
-    const shortPath = path.dirname(libraryItem.path.replace(`${repoRoot}/`, ""));
+    const shortPath = getShortPath(libraryItem);
     const contentUrl = `${contentUrlRoot}/${libraryItem.path}`;
     const docFileUrl = getDocFileUrl(libraryItem);
     const packageUrl = getUnityPackageUrl(libraryItem);
 
     const fileContentPromise = getFileContent(contentUrl);
-
 
     const supportingFilesPromises: Promise<LibraryContent | null>[] = [];
     for (const supportingFile of libraryItem.supportingFiles || []) {

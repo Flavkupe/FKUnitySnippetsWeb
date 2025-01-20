@@ -18,7 +18,6 @@ export function MainPage() {
                     <WebGLEmbed activeFile={activeFile?.demoName ?? null} />
                     <ResourcesBox />
                 </div>
-                <h2 style={{padding: "10px", width: "300px"}}>{activeFile?.name}</h2>
                 {!!docFile && <MarkdownBox codeFile={docFile} /> }
                 {code.map((codeFile) => (
                     <CodeBox key={codeFile.filename} codeFile={codeFile} />

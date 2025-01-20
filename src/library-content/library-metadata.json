@@ -28,7 +28,7 @@
         "category": "Curves/Bezier",
         "items": [
             {
-                "name": "BezierCurve",
+                "name": "Bezier",
                 "path": "Curves/Bezier/BezierDemo.cs",
                 "description": "Make the object oscillate along an axis.",
                 "supportingFiles": [
