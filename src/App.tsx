@@ -1,5 +1,5 @@
 import './App.css'
-import { PageHeader } from './components/page-header'
+import { PageHeader } from './components/header/page-header'
 import { MainPage } from './pages/main-page'
 
 function App() {

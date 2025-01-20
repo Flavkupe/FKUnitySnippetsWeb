@@ -1,5 +1,4 @@
-import { GithubFile } from "../models/github-files";
-
+import { GithubFile } from "../../models/github-files";
 
 interface Props {
     file: GithubFile;

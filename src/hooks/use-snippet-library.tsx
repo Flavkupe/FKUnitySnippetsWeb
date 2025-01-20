@@ -12,16 +12,25 @@ export interface SnippetLibraryValues {
     files: GithubFile[];
     codeFiles: CodeFile[] ;
     activeFile: GithubFile | null;
+    selectedFile: GithubFile | null;
     onSelectFile: (file: GithubFile) => void;
+    hasPackageFile: boolean;
+    downloadPackageFile: () => void;
 }
 
-export function useSnippetLibrary(): SnippetLibraryValues {
+interface Props {
+    webGLReady: boolean;
+}
+
+export function useSnippetLibrary({webGLReady}: Props): SnippetLibraryValues {
     const [files, setFiles] = useState<GithubFile[]>([]);
     const [codeFiles, setCodeFiles] = useState<CodeFile[]>([]);
     const [activeFile, setActiveFile] = useState<GithubFile | null>(null);
+    const [selectedFile, setSelectedFile] = useState<GithubFile | null>(null);
+
+
     const onSelectFile = (file: GithubFile) => {
-        setActiveFile(file);
-        
+        setSelectedFile(file);
         const newCodeFiles = [{ filename: file.filename, code: file.fileContent }];
         for (const supportingFile of file.supportingFiles ?? []) {
             newCodeFiles.push({ filename: supportingFile.filename, code: supportingFile.fileContent });
@@ -29,6 +38,27 @@ export function useSnippetLibrary(): SnippetLibraryValues {
 
         setCodeFiles(newCodeFiles);
     }
+
+    const activateFile = (file: GithubFile) => {
+        setActiveFile(file);
+    }
+
+    const downloadPackageFile = () => {
+        if (!selectedFile?.packageFileUrl || !selectedFile?.packageFileName) {
+            return;
+        }
+
+        const link = document.createElement("a");
+        link.href = selectedFile.packageFileUrl;
+        link.download = selectedFile.packageFileName;
+        link.click();
+    }
+
+    useEffect(() => {
+        if (webGLReady && selectedFile != null) {
+            activateFile(selectedFile);
+        }
+    }, [webGLReady, selectedFile]);
 
     useEffect(() => {
         const fetchFiles = async () => {
@@ -45,10 +75,15 @@ export function useSnippetLibrary(): SnippetLibraryValues {
         fetchFiles();
     }, []);
 
+    const hasPackageFile = !!selectedFile?.packageFileUrl;
+
     return {
         files,
         codeFiles,
         activeFile,
-        onSelectFile
+        selectedFile,
+        onSelectFile,
+        hasPackageFile,
+        downloadPackageFile,
     }
 }

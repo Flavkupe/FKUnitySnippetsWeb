@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from "react";
-import { UnityMessageData } from "../models/unity-message";
+import { UnityMessageData } from "../../models/unity-message";
 import { EmbedControls } from "./embed-controls";
+import { useLibraryContext } from "../../hooks/use-library-context";
+import { LoadingSpinner } from "../utils/loading-spinner";
 
 interface Props {
     activeFile: string | null;
@@ -8,12 +10,15 @@ interface Props {
 
 export function WebGLEmbed({activeFile}: Props) {   
     const iframeRef = useRef<HTMLIFrameElement | null>(null);
-
+    const { setWebGLReady, webGLReady } = useLibraryContext();
     const [controls, setControls] = useState<string[]>([]);
-
     const handleMessage = (event: MessageEvent) => {
         try {
             const data = JSON.parse(event.data) as UnityMessageData;
+            if (data.type === "WEB_GL_READY") {
+                setWebGLReady(true);
+            }
+            
             if (data.type !== "UNITY_MESSAGE") {
                 return;
             }
@@ -43,7 +48,7 @@ export function WebGLEmbed({activeFile}: Props) {
 
         const messageData = JSON.stringify({
             objectName: "WebInputManager",
-            methodName: "SwitchComponent",
+            methodName: "SwitchDemo",
             value: file,
         });
 
@@ -51,18 +56,24 @@ export function WebGLEmbed({activeFile}: Props) {
         iframeRef.current?.contentWindow.postMessage(message, '*');
     }
 
+    const url = window.location.hostname === "localhost" ? 
+        "http://localhost:53848/" : 
+        "https://flavkupe.github.io/FKUnitySnippets/";
+
     return <div style={{
         width:"100%",
         display: "flex",
         flexDirection: "row",
     }} >
+        { !webGLReady && <LoadingSpinner message="Loading Unity Demo..." />
+        }
         <iframe
+            style={{display: webGLReady ? "flex" : "none"}}
             scrolling="no"
             ref={iframeRef}
             width="300px"
             height="300px"
-            src="https://flavkupe.github.io/FKUnitySnippets/"
-            // src="http://localhost:51736/"
+            src={url}
         />
         <EmbedControls activeFile={activeFile} controls={controls} />
     </div>

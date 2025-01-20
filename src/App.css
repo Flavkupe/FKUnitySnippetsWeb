@@ -63,3 +63,12 @@ main {
   font-family: monospace;
   font-weight: bold;
 }
+
+.top-content {
+  display: flex;
+  justify-content: space-between;
+}
+
+.resources-box {
+  width: 300px;
+}

@@ -39,4 +39,14 @@ export interface GithubFile {
      * List of files that are shown alongside this file (eg, Bezier.cs for BezierDemo.cs).
      */
     supportingFiles?: GithubFile[];
+
+    /**
+     * If available, the URL to the package file for the current demo.
+     */
+    packageFileUrl?: string;
+
+    /**
+     * If available, the name of the package file for the current demo.
+     */
+    packageFileName?: string;
 }
