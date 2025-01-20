@@ -2,6 +2,9 @@ import axios from "axios";
 import fs from "fs";
 import path from "path";
 import libraryMetadata from "../library-content/library-metadata.json" assert {type: "json" };
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 interface LibraryItem {
     name: string;
@@ -36,17 +39,41 @@ const cachedContent: Record<string, string> = {};
 
 const allData: LibraryContent[] = [];
 
+// use a PAT in .env to make the call authenticated, to avoid rate limiting
+const githubToken = process.env.GITHUB_TOKEN;
+
 async function updatePages() {
+    const promises: Promise<LibraryContent | null>[] = [];
     for (const group of libraryMetadata) {
         for (const item of group.items) {
-            const data = await getLibraryItemData(item, group.category, false);
-            if (data) {
-                allData.push(data);
-            }
+            promises.push(getLibraryItemData(item, group.category, false));
+        }
+    }
+
+    const results = await Promise.all(promises);
+
+    for (const data of results) {
+        if (data) {
+            allData.push(data);
         }
     }
 
     await writeFileData(allData);
+}
+
+async function callUrl(url: string): Promise<string | null> {
+    const response = await axios.get(url, {
+        headers: {
+            Authorization: githubToken ? `token ${githubToken}` : undefined,
+        }
+    });
+
+    if (response.status !== 200 || !response.data) {
+        console.log("Error fetching url", url);
+        return null;
+    }
+
+    return response.data;
 }
 
 async function getLibraryItemContent(libraryItem: LibraryItem): Promise<string | null> {
@@ -55,16 +82,16 @@ async function getLibraryItemContent(libraryItem: LibraryItem): Promise<string |
         return cachedContent[url];
     }
 
-    const fileContent = await axios.get<string>(url);
+    const fileContent = await callUrl(url);
 
-    if (fileContent.status !== 200 || !fileContent) {
+    if (!fileContent) {
         console.log("Error fetching file content for file", libraryItem.path);
         return null;
     }
 
-    cachedContent[url] = fileContent.data;
+    cachedContent[url] = fileContent;
 
-    return fileContent.data;
+    return fileContent;
 }
 
 function getUnityPackageUrl(libraryItem: LibraryItem): string {
@@ -83,24 +110,31 @@ async function checkUnityPackageExists(libraryItem: LibraryItem): Promise<boolea
 }
 
 async function getLibraryItemData(libraryItem: LibraryItem, category: string, isSupportingFile: boolean): Promise<LibraryContent | null> {
-    const fileContent = await getLibraryItemContent(libraryItem);
-    if (!fileContent) {
-        return null;
-    }
-
-    const supportingFiles: LibraryContent[] = [];
-    for (const supportingFile of libraryItem.supportingFiles || []) {
-        const data = await getLibraryItemData(supportingFile, category, true);
-        if (data) {
-            supportingFiles.push(data);
-        }
-    }
-
     const filename = path.basename(libraryItem.path);
     const demoName = filename.replace(".cs", "");
     const htmlUrl = `${htmlUrlRoot}/${libraryItem.path}`;
     const name = libraryItem.name;
     const shortPath = path.dirname(libraryItem.path.replace(`${repoRoot}/`, ""));
+
+    const fileContentPromise = getLibraryItemContent(libraryItem);
+
+    const supportingFilesPromises: Promise<LibraryContent | null>[] = [];
+    for (const supportingFile of libraryItem.supportingFiles || []) {
+        supportingFilesPromises.push(getLibraryItemData(supportingFile, category, true));
+    }
+
+    const [fileContent, supportingFilesResults, hasPackage] = await Promise.all([
+        fileContentPromise,
+        Promise.all(supportingFilesPromises),
+        isSupportingFile ? Promise.resolve(false) : checkUnityPackageExists(libraryItem)
+    ]);
+
+    if (!fileContent) {
+        return null;
+    }
+
+    const supportingFiles = supportingFilesResults.filter(data => data !== null) as LibraryContent[];
+
     const values: LibraryContent = {
         demoName,
         fileContent,
@@ -113,12 +147,9 @@ async function getLibraryItemData(libraryItem: LibraryItem, category: string, is
         supportingFiles,
     };
 
-    if (!isSupportingFile) {
-        const hasPackage = await checkUnityPackageExists(libraryItem);
-        if (hasPackage) {
-            values.packageFileUrl = getUnityPackageUrl(libraryItem);
-            values.packageFileName = `${demoName}.unitypackage`;
-        }
+    if (!isSupportingFile && hasPackage) {
+        values.packageFileUrl = getUnityPackageUrl(libraryItem);
+        values.packageFileName = `${demoName}.unitypackage`;
     }
 
     return values;
