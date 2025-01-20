@@ -10,8 +10,6 @@ interface LibraryItem {
     name: string;
     path: string;
 
-    description?: string;
-
     // this is not a full LibraryItems; supporting files can't have supporting files
     supportingFiles?: LibraryItem[];
 }

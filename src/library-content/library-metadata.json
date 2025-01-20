@@ -4,8 +4,7 @@
         "items": [
             {
                 "name": "ShakyText",
-                "path": "Text/TMPro/ShakyText/ShakyText.cs",
-                "description": "Embed on the TMPro component to make the text jitter."
+                "path": "Text/TMPro/ShakyText/ShakyText.cs"
             }
         ]
     },
@@ -14,27 +13,47 @@
         "items": [
             {
                 "name": "OscillatingObject",
-                "path": "Transformations/OscillatingObject/OscillatingObject.cs",
-                "description": "Make the object oscillate along an axis."
+                "path": "Transformations/OscillatingObject/OscillatingObject.cs"
             },
             {
                 "name": "SpinningObject",
-                "path": "Transformations/SpinningObject/SpinningObject.cs",
-                "description": "Make the object spin along an axis."
+                "path": "Transformations/SpinningObject/SpinningObject.cs"
+            },
+            {
+                "name": "FadingObject",
+                "path": "Transformations/FadingObject/FadingObject.cs"
+            },
+            {
+                "name": "ShiftingObject",
+                "path": "Transformations/ShiftingObject/ShiftingObject.cs"
             }
         ]
     },
     {
-        "category": "Curves/Bezier",
+        "category": "Curves",
         "items": [
             {
                 "name": "Bezier",
                 "path": "Curves/Bezier/BezierDemo.cs",
-                "description": "Make the object oscillate along an axis.",
                 "supportingFiles": [
                     {
                         "name": "Bezier",
                         "path": "Curves/Bezier/Bezier.cs"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "category": "Coroutines",
+        "items": [
+            {
+                "name": "Timer",
+                "path": "Coroutines/Timer/TimerDemo.cs",
+                "supportingFiles": [
+                    {
+                        "name": "Timer",
+                        "path": "Coroutines/Timer/Timer.cs"
                     }
                 ]
             }
@@ -46,7 +65,6 @@
             {
                 "name": "WeightedList",
                 "path": "Probability/WeightedList/WeightedListDemo.cs",
-                "description": "Create a list of items which can be randomly picked based on the weights of each item!",
                 "supportingFiles": [
                     {
                         "name": "WeightedList",
