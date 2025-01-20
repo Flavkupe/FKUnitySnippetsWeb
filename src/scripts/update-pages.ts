@@ -22,7 +22,10 @@ interface LibraryContent {
     filename: string;
     path: string;
     url: string;
+    packageFileUrl?: string;
+    packageFileName?: string;
     supportingFiles?: LibraryContent[];
+
 }
 
 const repoRoot = "FKUnitySnippetsLibrary";
@@ -36,14 +39,13 @@ const allData: LibraryContent[] = [];
 async function updatePages() {
     for (const group of libraryMetadata) {
         for (const item of group.items) {
-            const data = await getLibraryItemData(item, group.category);
+            const data = await getLibraryItemData(item, group.category, false);
             if (data) {
                 allData.push(data);
             }
         }
     }
 
-    // await updateDirectory(repoRoot);
     await writeFileData(allData);
 }
 
@@ -65,7 +67,22 @@ async function getLibraryItemContent(libraryItem: LibraryItem): Promise<string |
     return fileContent.data;
 }
 
-async function getLibraryItemData(libraryItem: LibraryItem, category: string): Promise<LibraryContent | null> {
+function getUnityPackageUrl(libraryItem: LibraryItem): string {
+    const path = libraryItem.path.replace(/\.cs$/, '.unitypackage');
+    return `${contentUrlRoot}/${path}`;
+}
+
+async function checkUnityPackageExists(libraryItem: LibraryItem): Promise<boolean> {
+    const url = getUnityPackageUrl(libraryItem);
+    try {
+        const response = await axios.head(url);
+        return response.status === 200;
+    } catch (error) {
+        return false;
+    }
+}
+
+async function getLibraryItemData(libraryItem: LibraryItem, category: string, isSupportingFile: boolean): Promise<LibraryContent | null> {
     const fileContent = await getLibraryItemContent(libraryItem);
     if (!fileContent) {
         return null;
@@ -73,7 +90,7 @@ async function getLibraryItemData(libraryItem: LibraryItem, category: string): P
 
     const supportingFiles: LibraryContent[] = [];
     for (const supportingFile of libraryItem.supportingFiles || []) {
-        const data = await getLibraryItemData(supportingFile, category);
+        const data = await getLibraryItemData(supportingFile, category, true);
         if (data) {
             supportingFiles.push(data);
         }
@@ -84,7 +101,7 @@ async function getLibraryItemData(libraryItem: LibraryItem, category: string): P
     const htmlUrl = `${htmlUrlRoot}/${libraryItem.path}`;
     const name = libraryItem.name;
     const shortPath = path.dirname(libraryItem.path.replace(`${repoRoot}/`, ""));
-    return {
+    const values: LibraryContent = {
         demoName,
         fileContent,
         name,
@@ -95,24 +112,17 @@ async function getLibraryItemData(libraryItem: LibraryItem, category: string): P
         url: htmlUrl,
         supportingFiles,
     };
-}
 
-// async function updateDirectory(directoryPath: string) {
-//     const contents = await axios.get<GithubFile[]>(`${repo}/${directoryPath}`);
-//     const data = contents.data;
-    
-//     for (let i = 0; i < data.length; i++) {
-//         const content = data[i];
-//         if (content.type === "dir") {
-//             await updateDirectory(content.path);
-//         } else {
-//             const fileData = await getFileData(content);
-//             if (fileData) {
-//                 allData.push(fileData);
-//             }
-//         }
-//     }
-// }
+    if (!isSupportingFile) {
+        const hasPackage = await checkUnityPackageExists(libraryItem);
+        if (hasPackage) {
+            values.packageFileUrl = getUnityPackageUrl(libraryItem);
+            values.packageFileName = `${demoName}.unitypackage`;
+        }
+    }
+
+    return values;
+}
 
 async function writeFileData(allFileData: LibraryContent[]) {
     const libContentPath = "src/library-content/";
