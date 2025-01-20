@@ -6,7 +6,8 @@ export interface GithubFile {
 
     /**
      * Name that is used to match up the demo in the game applet
-     * (eg, "BezierDemo" for "BezierDemo.cs").
+     * (eg, "Bezier" for "BezierDemo.cs"). This will be set as DemoName
+     * in the Demo script for each Demo prefab.
      */
     demoName: string;
 

@@ -134,7 +134,7 @@ function getShortPath(libraryItem: LibraryItem): string {
 
 async function getLibraryItemData(libraryItem: LibraryItem, category: string, isSupportingFile: boolean): Promise<LibraryContent | null> {
     const filename = path.basename(libraryItem.path);
-    const demoName = filename.replace(".cs", "");
+    const demoName = libraryItem.name;
     const htmlUrl = `${htmlUrlRoot}/${libraryItem.path}`;
     const name = libraryItem.name;
     const shortPath = getShortPath(libraryItem);
