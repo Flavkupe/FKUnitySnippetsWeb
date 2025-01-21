@@ -8,7 +8,9 @@ const LibraryContext = createContext<LibraryContextProps | undefined>(undefined)
 
 export const LibraryContextProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const webGLState = useWebGLState();
-  const snippetLibraryProps = useSnippetLibrary({ webGLReady: webGLState.webGLReady });
+  const snippetLibraryProps = useSnippetLibrary({ 
+    webGLReady: webGLState.webGLReady,
+  });
 
   return (
     <LibraryContext.Provider value={{ ...snippetLibraryProps, ...webGLState }}>

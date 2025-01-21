@@ -1,6 +1,4 @@
 
-
-
 export function PageHeader() {
-    return <h1>FK Unity Snippet Library</h1>
+    return <h1>Unity Snippet Library</h1>
 }

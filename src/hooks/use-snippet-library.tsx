@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { GithubFile } from "../models/github-files";
 
 import allContents from "../library-content/library-content.json";
+import { useNavigate } from "react-router";
+import { ROOT_PATH } from "../constants/constants";
 
 
 
@@ -22,6 +24,7 @@ export interface SnippetLibraryValues {
     downloadPackageFile: () => void;
     updateControls: (newControls: string[]) => void;
     controls: string[];
+    selectLibraryPage: (pageName: string) => void;
 }
 
 interface Props {
@@ -35,8 +38,33 @@ export function useSnippetLibrary({webGLReady}: Props): SnippetLibraryValues {
     const [selectedFile, setSelectedFile] = useState<GithubFile | null>(null);
     const [docFile, setDocFile] = useState<CodeFile | null>(null);
     const [controls, setControls] = useState<string[]>([]);
+    const [route, setRoute] = useState<string | null>(null);
+    const navigate = useNavigate();
+
+    const selectLibraryPage = (pageName: string) => {
+        if (!pageName) {
+            return;
+        }
+
+        setRoute(pageName);
+        const file = files.find(f => f.name.localeCompare(pageName, undefined, { sensitivity: 'base' }) === 0);
+        if (file != null) {
+            onSelectFile(file);
+        }
+    };
+
+    useEffect(() => {
+        if (!route || !files || files.length === 0 || selectedFile) {
+            return;
+        }
+
+        selectLibraryPage(route);
+    }, [route, files, selectedFile]);
 
     const onSelectFile = (file: GithubFile) => {
+        
+        navigate(`${ROOT_PATH}/library/${file.name}`, { replace: true });
+        
         setSelectedFile(file);
         const newCodeFiles: CodeFile[] = [{ filename: file.filename, code: file.fileContent, type: "cs" }];
         for (const supportingFile of file.supportingFiles ?? []) {
@@ -112,5 +140,6 @@ export function useSnippetLibrary({webGLReady}: Props): SnippetLibraryValues {
         docFile: docFile,
         controls,
         updateControls,
+        selectLibraryPage,
     }
 }

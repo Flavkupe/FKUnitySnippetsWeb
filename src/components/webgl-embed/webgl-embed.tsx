@@ -56,7 +56,7 @@ export function WebGLEmbed({activeFile}: Props) {
     }
 
     const url = window.location.hostname === "localhost" ? 
-        "http://localhost:53848/" : 
+        "http://localhost:57823/" : 
         "https://flavkupe.github.io/FKUnitySnippets/";
 
     return <div style={{
