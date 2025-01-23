@@ -11,7 +11,7 @@ import { useEffect } from "react";
 export function LibraryPage() {
     const { itemId } = useParams<{ itemId: string}>();
 
-    const { files, codeFiles: code, docFile, activeFile, selectedFile, onSelectFile, selectLibraryPage } = useLibraryContext();
+    const { files, codeFiles: code, docFile, selectedFile, onSelectFile, selectLibraryPage } = useLibraryContext();
 
     useEffect(() => {
         if (!itemId){
@@ -28,7 +28,7 @@ export function LibraryPage() {
             </nav>
             <div className="content">
                 <div className="top-content">
-                    <WebGLEmbed activeFile={activeFile?.demoName ?? null} />
+                    <WebGLEmbed />
                     <ResourcesBox />
                 </div>
                 {!!docFile && <MarkdownBox codeFile={docFile} /> }

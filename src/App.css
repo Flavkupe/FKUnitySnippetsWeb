@@ -110,3 +110,8 @@ main {
   border-radius: 4px;
   font-size: "0.8em",
 }
+
+.embed-input-control label {
+  text-align: right;
+  font-size: "8px",
+}

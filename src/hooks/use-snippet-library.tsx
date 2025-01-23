@@ -4,6 +4,7 @@ import { GithubFile } from "../models/github-files";
 import allContents from "../library-content/library-content.json";
 import { useNavigate } from "react-router";
 import { ROOT_PATH } from "../constants/constants";
+import { InputControl } from "../models/unity-message";
 
 
 
@@ -22,8 +23,8 @@ export interface SnippetLibraryValues {
     onSelectFile: (file: GithubFile) => void;
     hasPackageFile: boolean;
     downloadPackageFile: () => void;
-    updateControls: (newControls: string[]) => void;
-    controls: string[];
+    updateControls: (newControls: InputControl[]) => void;
+    controls: InputControl[];
     selectLibraryPage: (pageName: string) => void;
 }
 
@@ -37,7 +38,7 @@ export function useSnippetLibrary({webGLReady}: Props): SnippetLibraryValues {
     const [activeFile, setActiveFile] = useState<GithubFile | null>(null);
     const [selectedFile, setSelectedFile] = useState<GithubFile | null>(null);
     const [docFile, setDocFile] = useState<CodeFile | null>(null);
-    const [controls, setControls] = useState<string[]>([]);
+    const [controls, setControls] = useState<InputControl[]>([]);
     const [route, setRoute] = useState<string | null>(null);
     const navigate = useNavigate();
 
@@ -75,20 +76,12 @@ export function useSnippetLibrary({webGLReady}: Props): SnippetLibraryValues {
             });
         }
 
-        // controls are updated from the WebGL embed; this ensures
-        // they are cleared out when the content does not have controls
-        setControls([]);
-
         setDocFile(!file.docFileContent ? null : {
             code: file.docFileContent,
             type: "md",
         });
 
         setCodeFiles(newCodeFiles);
-    }
-
-    const activateFile = (file: GithubFile) => {
-        setActiveFile(file);
     }
 
     const downloadPackageFile = () => {
@@ -103,10 +96,14 @@ export function useSnippetLibrary({webGLReady}: Props): SnippetLibraryValues {
     }
 
     useEffect(() => {
-        if (webGLReady && selectedFile != null) {
-            activateFile(selectedFile);
+        if (webGLReady && selectedFile != null && activeFile?.demoName != selectedFile?.demoName) {
+            // controls are updated from the WebGL embed; this ensures
+            // they are cleared out when the content does not have controls
+            setControls([]);
+
+            setActiveFile(selectedFile);
         }
-    }, [webGLReady, selectedFile]);
+    }, [webGLReady, selectedFile, activeFile]);
 
     useEffect(() => {
         const fetchFiles = async () => {
@@ -125,7 +122,7 @@ export function useSnippetLibrary({webGLReady}: Props): SnippetLibraryValues {
 
     const hasPackageFile = !!selectedFile?.packageFileUrl;
 
-    const updateControls = (newControls: string[]) => {
+    const updateControls = (newControls: InputControl[]) => {
         setControls(newControls);
     }
 

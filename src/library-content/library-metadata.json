@@ -50,6 +50,16 @@
                         "path": "Curves/Bezier/Bezier.cs"
                     }
                 ]
+            },
+            {
+                "name": "CatmullRomSpline",
+                "path": "Curves/CatmullRomSpline/CatmullRomSplineDemo.cs",
+                "supportingFiles": [
+                    {
+                        "name": "CatmullRomSpline",
+                        "path": "Curves/CatmullRomSpline/CatmullRomSpline.cs"
+                    }
+                ]
             }
         ]
     },
