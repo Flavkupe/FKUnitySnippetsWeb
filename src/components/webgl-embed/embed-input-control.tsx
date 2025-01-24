@@ -123,19 +123,19 @@ function Vector3Control({control, messageControls}: ControlProps<Vector3InputCon
             <Form.Label column sm={LabelCol}>{control.fieldName}</Form.Label>
             <Col sm={InputCol}>
             <Form.Group as={Row} >
-            <Col sm="4">
+            <Col sm="4" style={{ paddingRight: "0px" }}>
                 <Form.Control type="number"
                     value={x}
                     onChange={(e) => onChange(e, setX)}
                     step={control.incrementValue} />
             </Col>
-            <Col sm="4">
+            <Col sm="4" style={{ paddingLeft: "6px", paddingRight: "6px" }}>
                 <Form.Control type="number"    
                     value={y}
                     onChange={(e) => onChange(e, setY)}
                     step={control.incrementValue} />
             </Col>
-            <Col sm="4">
+            <Col sm="4" style={{ paddingLeft: "0px" }}>
                 <Form.Control type="number"    
                     value={z}
                     onChange={(e) => onChange(e, setZ)}

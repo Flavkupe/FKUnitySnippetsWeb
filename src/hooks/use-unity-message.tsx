@@ -91,7 +91,7 @@ export function useUnityMessage({sendMessageToUnity}: Props): UseUnityMessageVal
         }
 
         const setVector3Value = (fieldName: string, value: Vector3) => {
-            const message = createMessage("SetFloatValue", JSON.stringify({
+            const message = createMessage("SetVector3Value", JSON.stringify({
                 FieldName: fieldName,
                 Value: value,
             }));

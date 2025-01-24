@@ -23,8 +23,7 @@ export function WebGLEmbed() {
     }, []);
 
     const url = window.location.hostname === "localhost" ? 
-        // "http://localhost:57823/" : 
-        "http://localhost:56981/" :
+        "http://localhost:8080/" :
         "https://flavkupe.github.io/FKUnitySnippets/";
 
     return <div style={{
