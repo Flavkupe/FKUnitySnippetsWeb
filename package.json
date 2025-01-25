@@ -2,7 +2,7 @@
   "name": "fkunitysnippetsweb",
   "private": true,
   "version": "0.0.0",
-  "homepage": "https://Flavkupe.github.io/FKUnitySnippetsWeb/",
+  "homepage": "https://flavkupe.github.io/FKUnitySnippetsWeb",
   "type": "module",
   "scripts": {
     "dev": "vite",

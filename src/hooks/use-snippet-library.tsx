@@ -3,10 +3,7 @@ import { GithubFile } from "../models/github-files";
 
 import allContents from "../library-content/library-content.json";
 import { useNavigate } from "react-router";
-import { ROOT_PATH } from "../constants/constants";
 import { InputControl } from "../models/unity-message";
-
-
 
 export interface CodeFile {
     filename?: string;
@@ -64,7 +61,7 @@ export function useSnippetLibrary({webGLReady}: Props): SnippetLibraryValues {
 
     const onSelectFile = (file: GithubFile) => {
         
-        navigate(`${ROOT_PATH}/library/${file.name}`, { replace: true });
+        navigate(`library/${file.name}`, { replace: true });
         
         setSelectedFile(file);
         const newCodeFiles: CodeFile[] = [{ filename: file.filename, code: file.fileContent, type: "cs" }];
