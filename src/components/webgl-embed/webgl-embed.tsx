@@ -24,7 +24,7 @@ export function WebGLEmbed() {
 
     const url = window.location.hostname === "localhost" ? 
         "http://localhost:8080/" :
-        "https://flavkupe.github.io/FKUnitySnippets/";
+        "https://dube9zr6o416s.cloudfront.net/";
 
     return <div style={{
         width:"100%",
