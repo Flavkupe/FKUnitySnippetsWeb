@@ -42,7 +42,7 @@ export function WebGLEmbed() {
         if (!webGLReady && !loadTimedOut) {
             setTimeout(() => {
                 setLoadTimedOut(true);
-            }, 10000);
+            }, TIMEOUT_DURATION);
         }
     }, [webGLReady]);
 
