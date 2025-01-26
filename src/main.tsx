@@ -3,16 +3,15 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.tsx'
 import { LibraryContextProvider } from './hooks/use-library-context.tsx'
-import { BrowserRouter } from 'react-router-dom'
-import { ROOT_PATH } from './constants/constants'
+import { HashRouter } from 'react-router-dom'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <BrowserRouter basename={`/${ROOT_PATH}`}>
+    <HashRouter>
       <LibraryContextProvider>
       <App />
       </LibraryContextProvider>
-    </BrowserRouter>
+    </HashRouter>
     
   </StrictMode>,
 )
