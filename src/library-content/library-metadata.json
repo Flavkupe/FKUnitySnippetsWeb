@@ -1,5 +1,14 @@
 [
     {
+        "category": "Interfaces",
+        "items": [
+            {
+                "name": "Interfaces",
+                "path": "Interfaces/IDamageable.cs"
+            }
+        ]
+    },
+    {
         "category": "ExtensionFunctions",
         "items": [
             {
@@ -79,6 +88,39 @@
             {
                 "name": "CoroutineRunner",
                 "path": "Coroutines/Runner/CoroutineRunner.cs"
+            }
+        ]
+    },
+    {
+        "category": "Projectiles",
+        "items": [
+            {
+                "name": "Projectile",
+                "path": "Projectiles/Projectile/Projectile.cs",
+                "supportingFiles": [
+                    {
+                        "name": "ArcProjectile",
+                        "path": "Projectiles/Projectile/ArcProjectile.cs"
+                    },
+                    {
+                        "name": "ProjectileSpawner",
+                        "path": "Projectiles/Projectile/ProjectileSpawner.cs"
+                    },
+                    {
+                        "name": "IDamageable",
+                        "path": "Interfaces/IDamageable.cs"
+                    }
+                ]
+            },
+            {
+                "name": "FireRadially",
+                "path": "Projectiles/FireRadially/FireRadially.cs",
+                "supportingFiles": [
+                    {
+                        "name": "Projectile",
+                        "path": "Projectiles/Projectile/Projectile.cs"
+                    }
+                ]
             }
         ]
     },
